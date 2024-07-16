@@ -1,0 +1,4 @@
+debug
+.direnv
+.sqlx
+target

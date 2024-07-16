@@ -1,0 +1,93 @@
+#+title: react notes
+This is mostly going to be cribbed from react.dev
+* Describing the UI
+** Components
+React applications are built with parts of UI called _components_.
+A component is a function that returns some markup.
+
+A very simple component would look something like this.
+
+#+BEGIN_SRC js2
+function Greeting({greeting}) {
+  return(
+    <>
+      <h1>{greeting}</h1>
+    </>
+  );
+}
+
+export default function Greeter() {
+    return (
+        <>
+            <Greeting greeting={"Hi"}/>
+        </>
+    );
+}
+#+END_SRC
+
+In this example, we pass a greeting in the form of a property into this component.
+** Rendering Lists
+Often we want to display multiple components from a collection of data.
+To do this, we can make use of ~filter~ and ~map~, to transform the array of data into
+an array of components.
+
+Each item needs a key, usually we want to use some ID from some persistant datastore.
+* Interactivity
+** Events
+React lets us add event handlers.
+Event handlers are functions that are triggered upon certain events like
+clicking, hovering, focusing on form inputs etc.
+Built-in components like ~<button>~ only support built-in events like onClick,
+buty we can create our own components with our own application-speciic names we want.
+
+Take this example, where we make our own custom Button which is just a wrapper
+around a "real" button, but this is called from a Toolbar, which takes two
+functions, which are passsed down to our wrapped Button.
+#+BEGIN_SRC typescript
+function Toolbar({onPayMovie, onUploadImage}) {
+  return (
+    <div>
+      <Button onClick={onPlayMovie}> Play Movie </Button>
+      <Button onClick={onUploadImage} Upload Image </Button>
+    </div>
+  );
+}
+
+function Button({onClick, children}) {
+  return (
+    <button onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+#+END_SRC
+** State
+Components need to change what's on the screen as a result of interaction.
+When we type in a form for example, it should update the field. When we click
+next on an image carousel, it should change what image is displayed.
+With react, we term this state.
+
+We can add state to a component, with a ~useState~ hook. Hooks are functions
+that allow our components to use react features.
+useState lets us declare a state variable, which takes some initial state, and
+returns two bindings.
+One is a binding to the current state, and the other is a binding to a function
+whcih allows us to set the state to a new value.
+
+A simple example is like this.
+#+BEGIN_SRC js
+const [idx, setIdx] = useState(0);
+const [showMore, setShowMore] = useState(false);
+#+END_SRC
+
+State is a snapshot of the programs state at time of trigger. This means that if
+we do something like this
+#+BEGIN_SRC js
+console.log(count);  // 0
+setCount(count + 1); // Request a re-render with 1
+console.log(count);  // Still 0!
+#+END_SRC
+
+the state _outside_ of our made up handler will change, but inside it will
+remain static.
+This is very useful as it makes it way harder to have race conditions.

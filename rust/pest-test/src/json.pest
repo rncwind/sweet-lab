@@ -1,0 +1,56 @@
+WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
+
+// A JSON value is an object, array, string, number, boolean or null.
+value = _{ object | array | string | number | boolean | null }
+
+// Simple enough
+boolean = { "true" | "false" }
+null = { "null" }
+
+// Strings are a bit more complex. A char is a rule which mateches any logical
+// character, which includes backslash escapes.
+// Inner represents the contents of the string without the surrounding "".
+// string matches the inner contents of the string, including the "".
+// The char rule uses the !(...) ~ ANY idiom witch matches any char except
+// the ones given in parens. In this case any char is legall except for " and \
+// which require some seperate parsing logic
+
+// $ means compound atomic. This means string token pairs will also have a single
+// inner pair. Since inner is marked atomic no char pairs will appear inside inner.
+string = ${ "\"" ~ inner ~ "\"" }
+inner = @{ char* }
+char = {
+    !("\"" | "\\") ~ ANY
+    | "\\" ~ ("\"" | "\\" | "/" | "b" | "f" | "n" | "r" | "t")
+    | "\\" ~ ("u" ~ ASCII_HEX_DIGIT{4})
+}
+
+// A number has four logicl parts. optional sign, integral part, optional fractional
+// part, an optional exponent.
+// By marking this rule as atomic we state that whitespace cant appear between parts.
+number = @{
+       "-"?
+       ~ ("0" | ASCII_NONZERO_DIGIT ~ ASCII_DIGIT*)
+       ~ ("." ~ ASCII_DIGIT*)?
+       ~ (^"e" ~ ("+" | "-")? ~ ASCII_DIGIT+)?
+}
+
+
+// A JSON object is a sequence of Pairs which are spperated by commas.
+object = {
+       "{" ~ "}" |
+       "{" ~ pair ~ ("," ~ pair)* ~ "}"
+}
+// A pair is a key, value pair sepperated by a :
+pair = { string ~ ":" ~ value }
+
+// An array is a series of values in [] seperated by ,
+array = {
+      "[" ~ "]" |
+      "[" ~ value ~ ("," ~ value)* ~ "]"
+}
+
+// We also need one last rule to represent a whole json file.
+// In this case. A JSON file is start of input, followed by
+// a parsed pair, and then the end of file.
+json = _{ SOI ~ (object | array) ~ EOI }

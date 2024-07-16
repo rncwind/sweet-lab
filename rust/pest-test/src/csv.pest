@@ -1,0 +1,7 @@
+// Every field is a series of ascii digits, .s or -s
+field = { (ASCII_DIGIT | "." | "-")+ }
+// Every record is a field followed by a series of ,s and fields
+record = { field ~ ("," ~ field)* }
+// SOI is Start of Input and EOI is end.
+// A CSV file contains a start, a series of records, followed by line terminators and then ends.
+file = { SOI ~ (record ~ ( "\r\n" | "\n" ))* ~ EOI }

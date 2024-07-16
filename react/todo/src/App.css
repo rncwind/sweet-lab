@@ -1,0 +1,30 @@
+.completeStateIncomplete {
+  color: red;
+}
+
+.completeStateComplete {
+  color: green;
+}
+
+.todoEntry {
+  display: grid;
+  grid-template-columns: 0.2fr 3fr 0.5fr;
+  /* display: flex; */
+  /* justify-content: space-between; */
+}
+
+#submitNewTodoForm {
+  display: grid;
+  grid-template-columns: 0.2fr 3fr 0.5fr;
+  /* display: flex; */
+  /* justify-content: space-between; */
+}
+
+#addTodoTextArea {
+  flex-grow: 1;
+}
+
+body {
+  margin: 5% auto;
+  max-width: 40%;
+}

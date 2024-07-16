@@ -1,0 +1,11 @@
+# LSP polution
+.elixir_ls
+
+# Standard elixir ignores
+_build
+cover
+deps
+doc
+.fetch
+erl_crash.dmp
+*.ez
